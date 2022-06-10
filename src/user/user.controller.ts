@@ -3,10 +3,14 @@ import {
   Controller,
   Delete,
   Get,
+  Logger,
   Param,
   Post,
-  Put
+  Put,
+  UploadedFile,
+  UseInterceptors
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateUserDto } from './dto/createUser.dto';
 import { UpdateUserDto } from './dto/updateUser.dto';
 import { UserService } from './user.service';
@@ -19,12 +23,12 @@ export class UserController {
     return this.userService.findUser(email);
   }
 
-  // can't understand why async functions have to return promises only. Cant we await inside async
   @Post()
+  @UseInterceptors(FileInterceptor('file'))
   async createUser(
-    @Body() createUserDto: CreateUserDto,
+    @Body() createUserDto: CreateUserDto, @UploadedFile() file: Express.Multer.File
   ): Promise<CreateUserDto> {
-    return this.userService.createUser(createUserDto);
+    return this.userService.createUser(createUserDto, file);
   }
 
   @Put()

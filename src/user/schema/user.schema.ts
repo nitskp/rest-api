@@ -13,6 +13,11 @@ export class User {
   age: number;
   @Prop()
   email: string;
+  @Prop()
+  password: string;
+  // need to see how to add more than one field in the schema
+  @Prop()
+  profilePic: Buffer
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
