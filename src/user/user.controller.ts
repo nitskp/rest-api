@@ -7,30 +7,35 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { UserDto } from './dto/user.dto';
-import { User } from './intefaces/user.interace';
+import { CreateUserDto } from './dto/createUser.dto';
+import { UpdateUserDto } from './dto/updateUser.dto';
 import { UserService } from './user.service';
 
 @Controller('user')
 export class UserController {
   constructor(private userService: UserService) {}
   @Get(':email')
-  findUser(@Param('email') email: string): User {
+  async findUser(@Param('email') email: string): Promise<CreateUserDto> {
     return this.userService.findUser(email);
   }
 
+  // can't understand why async functions have to return promises only. Cant we await inside async
   @Post()
-  createUser(@Body() userDto: UserDto): User {
-    return this.userService.createUser(userDto);
+  async createUser(
+    @Body() createUserDto: CreateUserDto,
+  ): Promise<CreateUserDto> {
+    return this.userService.createUser(createUserDto);
   }
 
   @Put()
-  updateUser(): string {
-    return `User details updated`;
+  async updateUser(@Body() updateUserDto: UpdateUserDto): Promise<any> {
+    const email = updateUserDto.email;
+    const updateField = updateUserDto.updateField;
+    return this.userService.updateUser(email, updateField);
   }
 
   @Delete(':email')
-  deleteUser(@Param('email') email: string): User[] {
+  async deleteUser(@Param('email') email: string): Promise<any> {
     return this.userService.deleteUser(email);
   }
 }
