@@ -1,13 +1,17 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Logger, Post, Request, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { LoginUserDto } from './dto/loginUser.dto';
+import { LocalAuthGuard } from './local-auth.guard';
 
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
+
+  @UseGuards(LocalAuthGuard)
   @Post()
-  signin(@Body() loginUserDto: LoginUserDto) {
-    const { email, password } = loginUserDto;
-    return this.authService.signin(email, password);
+  signin(@Request() req: any) {
+    Logger.debug(process.env.SECRET_JWT)
+    return this.authService.signin(req.user);
   }
 }
