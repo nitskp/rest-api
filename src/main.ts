@@ -1,9 +1,12 @@
-import { Logger } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { logger: ['log','error','debug'] });
+  const app = await NestFactory.create(AppModule, {
+    logger: ['log', 'error', 'debug'],
+  });
+  app.useGlobalPipes(new ValidationPipe());
   await app.listen(3000);
 }
 bootstrap();

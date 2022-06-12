@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  Logger,
   Param,
   Post,
   Put,
@@ -20,6 +19,7 @@ import { UserService } from './user.service';
 @Controller('user')
 export class UserController {
   constructor(private userService: UserService) {}
+  
   @UseGuards(JwtAuthGuard)
   @Get(':email')
   async findUser(@Param('email') email: string): Promise<CreateUserDto> {
@@ -35,6 +35,7 @@ export class UserController {
     return this.userService.createUser(createUserDto, file);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put()
   async updateUser(@Body() updateUserDto: UpdateUserDto): Promise<any> {
     const email = updateUserDto.email;
@@ -42,6 +43,7 @@ export class UserController {
     return this.userService.updateUser(email, updateField);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':email')
   async deleteUser(@Param('email') email: string): Promise<any> {
     return this.userService.deleteUser(email);
