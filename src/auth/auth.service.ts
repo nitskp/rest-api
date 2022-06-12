@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from 'src/user/dto/createUser.dto';
 import { UserService } from 'src/user/user.service';
 import * as argon from 'argon2';

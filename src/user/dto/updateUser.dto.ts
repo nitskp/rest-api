@@ -1,3 +1,5 @@
+import { IsEmail } from "class-validator";
+
 export interface Field {
   age?: number;
   firstName?: string;
@@ -5,6 +7,7 @@ export interface Field {
 }
 
 export class UpdateUserDto {
+  @IsEmail()
   email: string;
   updateField: Field;
 }
