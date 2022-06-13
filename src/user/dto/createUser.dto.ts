@@ -23,7 +23,7 @@ export class CreateUserDto {
   @IsNotEmpty()
   password: string;
 
+  // need to see how to properly integrate this with api
   @ApiProperty({ type: ProfilePic, description: 'Profile Pic field' })
-  @IsNotEmpty()
   profilePic: ProfilePic;
 }

@@ -13,8 +13,11 @@ export class AuthService {
   async validateUser(email: string, password: string) {
     try {
       const user: CreateUserDto = await this.userService.findUser(email);
+
       if (user && (await argon.verify(user.password, password))) {
         const { password, ...result } = user;
+        // check why this undefined
+        // Logger.debug(result.email)
         return result;
       }
       return null;
