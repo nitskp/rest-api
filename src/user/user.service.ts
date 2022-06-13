@@ -1,6 +1,7 @@
 import {
   Injectable,
   InternalServerErrorException,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -20,13 +21,19 @@ export class UserService {
   ): Promise<User> {
     const hashedPassword = await argon.hash(createUserDto.password);
 
+    const profilePic = {
+      content: file.mimetype,
+      data: file.buffer,
+      fileName: file.originalname,
+    };
+
     const createdUser = new this.userModel({
       firstName: createUserDto.firstName,
       lastName: createUserDto.lastName,
       age: createUserDto.age,
       password: hashedPassword,
       email: createUserDto.email,
-      profilePic: file.buffer,
+      profilePic: profilePic,
     });
     return createdUser.save();
   }
