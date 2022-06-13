@@ -1,4 +1,8 @@
-import { Injectable, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { CreateUserDto } from './dto/createUser.dto';
 import { User, UserType } from './schema/user.schema';
@@ -14,36 +18,46 @@ export class UserService {
     createUserDto: CreateUserDto,
     file: Express.Multer.File,
   ): Promise<User> {
-    try {
-      const hashedPassword = await argon.hash(createUserDto.password);
+    const hashedPassword = await argon.hash(createUserDto.password);
 
-      const createdUser = new this.userModel({
-        firstName: createUserDto.firstName,
-        lastName: createUserDto.lastName,
-        age: createUserDto.age,
-        password: hashedPassword,
-        email: createUserDto.email,
-        profilePic: file.buffer,
-      });
-      return createdUser.save();
-    } catch (error) {
-      Logger.error(error);
-      return error;
-    }
+    const createdUser = new this.userModel({
+      firstName: createUserDto.firstName,
+      lastName: createUserDto.lastName,
+      age: createUserDto.age,
+      password: hashedPassword,
+      email: createUserDto.email,
+      profilePic: file.buffer,
+    });
+    return createdUser.save();
   }
 
-  async findUser(email: string): Promise<User> {
-    return this.userModel.findOne({ email: email }).exec();
+  async findUser(email: string) {
+    const user = await this.userModel.findOne({ email: email }).exec();
+    if (!user) {
+      throw new NotFoundException(`No user with email ${email}`);
+    }
+    return user;
   }
 
   async updateUser(email: string, updateField: Field) {
-    return this.userModel.findOneAndUpdate(
+    const user = await this.userModel.findOneAndUpdate(
       { email: email },
       { $set: updateField },
     );
+
+    if (!user) {
+      throw new NotFoundException(`No user with email ${email}`);
+    }
+
+    return user;
   }
 
   async deleteUser(email: string): Promise<any> {
-    return this.userModel.deleteMany({ email: email }).exec();
+    const res = await this.userModel.deleteMany({ email: email }).exec();
+    if (!res.acknowledged)
+      throw new InternalServerErrorException("Database didn't acknowledged");
+    if (!res.deletedCount)
+      throw new NotFoundException(`No user with email ${email}`);
+    return res;
   }
 }

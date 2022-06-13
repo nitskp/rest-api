@@ -9,7 +9,6 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post()
   signin(@Request() req: any) {
-    Logger.debug('User',req.user)
     return this.authService.signin(req.user);
   }
 }

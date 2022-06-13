@@ -19,10 +19,10 @@ import { UserService } from './user.service';
 @Controller('user')
 export class UserController {
   constructor(private userService: UserService) {}
-  
+
   @UseGuards(JwtAuthGuard)
   @Get(':email')
-  async findUser(@Param('email') email: string): Promise<CreateUserDto> {
+  async findUser(@Param('email') email: string) {
     return this.userService.findUser(email);
   }
 
@@ -37,7 +37,7 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Put()
-  async updateUser(@Body() updateUserDto: UpdateUserDto): Promise<any> {
+  async updateUser(@Body() updateUserDto: UpdateUserDto) {
     const email = updateUserDto.email;
     const updateField = updateUserDto.updateField;
     return this.userService.updateUser(email, updateField);
@@ -45,7 +45,7 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Delete(':email')
-  async deleteUser(@Param('email') email: string): Promise<any> {
+  async deleteUser(@Param('email') email: string) {
     return this.userService.deleteUser(email);
   }
 }
