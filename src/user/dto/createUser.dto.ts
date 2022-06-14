@@ -24,6 +24,10 @@ export class CreateUserDto {
   password: string;
 
   // need to see how to properly integrate this with api
-  @ApiProperty({ type: ProfilePic, description: 'Profile Pic field' })
-  profilePic: ProfilePic;
+  @ApiProperty({
+    type: String,
+    description: 'Profile Pic field',
+    format: 'binary',
+  })
+  file?: any;
 }

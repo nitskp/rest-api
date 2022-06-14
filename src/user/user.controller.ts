@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  InternalServerErrorException,
+  Logger,
   Param,
   Post,
   Put,
@@ -43,15 +45,24 @@ export class UserController {
 
   @Post()
   @UseInterceptors(FileInterceptor('file'))
-  @ApiBody({ type: CreateUserDto, description: 'Data needed to added to user' })
+  @ApiBody({
+    type: CreateUserDto,
+    description: 'User data',
+  })
   @ApiCreatedResponse({ description: 'User has been successfully created' })
   @ApiInternalServerErrorResponse({ description: "Couldn't create the user" })
   @ApiConsumes('multipart/form-data')
   async createUser(
     @Body() createUserDto: CreateUserDto,
     @UploadedFile() file: Express.Multer.File,
-  ): Promise<CreateUserDto> {
-    return this.userService.createUser(createUserDto, file);
+  ): Promise<any> {
+    // changed it like this because swagger wasn't displaying returned user. Think there's some problem with image returned
+    const user = await this.userService.createUser(createUserDto, file);
+    if (user) {
+      return 'User Created';
+    } else {
+      throw new InternalServerErrorException();
+    }
   }
 
   @UseGuards(JwtAuthGuard)

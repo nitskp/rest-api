@@ -6,19 +6,18 @@ import { Document } from 'mongoose';
 export type UserType = User & Document;
 
 export class ProfilePic {
-  @ApiProperty({ type: String, description: 'file format' })
+  // @ApiProperty({ type: String, description: 'file format' })
   @IsNotEmpty()
   content: string;
 
-  @ApiProperty({
-    type: String,
-    description: 'Data in buffer form,',
-    format: 'binary',
-  })
+  // @ApiProperty({
+  //   type: 'string',
+  //   format:'binary'
+  // })
   @IsNotEmpty()
   data: Buffer;
 
-  @ApiProperty({ type: String, description: 'File Original Name' })
+  // @ApiProperty({ type: String, description: 'File Original Name' })
   @IsNotEmpty()
   fileName: string;
 }
